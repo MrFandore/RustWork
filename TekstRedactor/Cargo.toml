@@ -1,0 +1,17 @@
+[package]
+name = "tekst_gui_editor"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+eframe = "0.27"
+egui = "0.27"
+rfd = "0.14"
+
+serde_json = "1.0"
+arboard = "3.3"
+dirs = "5.0"
+
+# Для загрузки иконки
+image = "0.24"
+anyhow = "1.0"
