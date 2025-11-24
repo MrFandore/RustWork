@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MonitorSystemOPs</title>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .metric {
+            margin: 15px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border-left: 4px solid #007bff;
+        }
+        .metric.cpu { border-left-color: #dc3545; }
+        .metric.memory { border-left-color: #28a745; }
+        .metric.disk { border-left-color: #ffc107; }
+        .metric.network { border-left-color: #6f42c1; }
+        .metric-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+        .metric-label {
+            color: #666;
+            font-size: 14px;
+        }
+        .status {
+            padding: 10px;
+            background: #e9ecef;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>🖥️ MonitorSystemOPs</h1>
+    <p>Системный мониторинг в реальном времени</p>
+
+    <div class="metric cpu">
+        <div class="metric-label">Использование CPU</div>
+        <div class="metric-value" id="cpu">0%</div>
+    </div>
+
+    <div class="metric memory">
+        <div class="metric-label">Использование памяти</div>
+        <div class="metric-value" id="memory">0%</div>
+    </div>
+
+    <div class="metric disk">
+        <div class="metric-label">Использование диска (C:)</div>
+        <div class="metric-value" id="disk">0%</div>
+    </div>
+
+    <div class="metric network">
+        <div class="metric-label">Сетевая активность</div>
+        <div class="metric-value" id="network">RX: 0 TX: 0</div>
+    </div>
+
+    <div class="metric">
+        <div class="metric-label">Активные процессы</div>
+        <div class="metric-value" id="processes">0</div>
+    </div>
+
+    <div class="status">
+        <div>Последнее обновление: <span id="lastUpdate">--</span></div>
+        <div>Статус: <span id="status">Загрузка...</span></div>
+    </div>
+</div>
+
+<script>
+    async function updateMetrics() {
+        try {
+            const response = await fetch('/metrics');
+            if (!response.ok) throw new Error('Ошибка сети');
+
+            const data = await response.json();
+
+            document.getElementById('cpu').textContent = data.cpu_usage.toFixed(1) + '%';
+            document.getElementById('memory').textContent = data.memory_usage_percent.toFixed(1) + '%';
+            document.getElementById('disk').textContent = data.disk_usage_percent.toFixed(1) + '%';
+            document.getElementById('network').textContent = `RX: ${data.network_rx} TX: ${data.network_tx}`;
+            document.getElementById('processes').textContent = data.processes_count;
+            document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
+            document.getElementById('status').textContent = 'Подключено';
+
+        } catch (error) {
+            document.getElementById('status').textContent = 'Ошибка подключения';
+            console.error('Ошибка:', error);
+        }
+    }
+
+    setInterval(updateMetrics, 3000);
+    updateMetrics();
+</script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+[monitoring]
+interval_seconds = 5
+
+[storage]
+max_records = 1000
+
+[web]
+host = "127.0.0.1"
+port = 8080
